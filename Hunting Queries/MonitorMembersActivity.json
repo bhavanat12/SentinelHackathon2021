@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/f707a9d2-0958-4a3e-948c-963cbf7ba616')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/f707a9d2-0958-4a3e-948c-963cbf7ba616')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "apiVersion": "2021-03-01-preview",
+            "properties": {
+                "displayName": "Monitor Member's activity",
+                "description": "Monitor all activity related to particular member",
+                "severity": "Medium",
+                "enabled": true,
+                "query": "let max_delete = 0;\r\nlet time_window = 7d;\r\nlet memberId = \"absol#3915\";\r\nlet AuditOperations = (DiscordAuditLogs_CL \r\n| where TimeGenerated > ago(time_window)\r\n| where ExtendedProperties_s == memberId\r\n| distinct type_s\r\n| summarize mylist = make_list(type_s)\r\n| project mylist);\r\nlet MsgCount = (MessageLogs_CL\r\n| where author_s == memberId\r\n| summarize msgCount = count()\r\n| project msgCount);\r\nlet MsgingChannels = (MessageLogs_CL\r\n| where author_s == memberId\r\n| distinct channel_s\r\n| summarize mylist = make_list(channel_s)\r\n| project mylist);\r\nlet UrlsCount = (MessageLogs_CL\r\n| where author_s == memberId and urls_s != ''\r\n| summarize urlCount = count()\r\n| project urlCount);\r\nAttachmentLogs_CL\r\n| where author_s == memberId\r\n| summarize AttCount = count()\r\n| project DistinctAuditOperations = toscalar(AuditOperations), MsgCount = toscalar(MsgCount), UrlCount = toscalar(UrlsCount), AttachmentCount = AttCount, ChannelsUsed = toscalar(MsgingChannels)",
+                "queryFrequency": "PT5H",
+                "queryPeriod": "PT5H",
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "suppressionDuration": "PT5H",
+                "suppressionEnabled": false,
+                "tactics": [],
+                "alertRuleTemplateName": null,
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": [],
+                        "groupByAlertDetails": [],
+                        "groupByCustomDetails": []
+                    }
+                },
+                "eventGroupingSettings": {
+                    "aggregationKind": "SingleAlert"
+                },
+                "alertDetailsOverride": null,
+                "customDetails": null,
+                "entityMappings": null
+            }
+        }
+    ]
+}

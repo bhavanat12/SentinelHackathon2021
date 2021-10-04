@@ -1,0 +1,82 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/8d285110-04ba-4dd3-8d79-4e3438e50577')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/8d285110-04ba-4dd3-8d79-4e3438e50577')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "apiVersion": "2021-03-01-preview",
+            "properties": {
+                "displayName": "DiscordMaliciousURL",
+                "description": "Triggered when malicious URL is detected in Discord messages",
+                "severity": "High",
+                "enabled": true,
+                "query": "let OSINT = externaldata(IP: string,values:dynamic) [@\"https://threatview.io/Downloads/IP-High-Confidence-Feed.txt\", @\"https://threatview.io/Downloads/DOMAIN-High-Confidence-Feed.txt\"]\nwith (format=\"txt\",ignoreFirstRecord=true)\n| where IP !startswith \"#\"\n| project IP;\nOSINT\n| join (MessageLogs_CL\n) \non $left.IP == $right.urls_s\n| project TimeGenerated, IP, content_s, author_s, channel_s, channelID_s, messageid_s",
+                "queryFrequency": "PT5M",
+                "queryPeriod": "PT5M",
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "suppressionDuration": "PT5H",
+                "suppressionEnabled": false,
+                "tactics": [],
+                "alertRuleTemplateName": null,
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": [],
+                        "groupByAlertDetails": [],
+                        "groupByCustomDetails": []
+                    }
+                },
+                "eventGroupingSettings": {
+                    "aggregationKind": "AlertPerResult"
+                },
+                "alertDetailsOverride": null,
+                "customDetails": {
+                    "Author": "author_s",
+                    "AttachmentID": "messageid_s",
+                    "ChannelID": "channelID_s",
+                    "Content": "content_s",
+                    "Channel": "channel_s"
+                },
+                "entityMappings": [
+                    {
+                        "entityType": "Account",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Name",
+                                "columnName": "author_s"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/8d285110-04ba-4dd3-8d79-4e3438e50577/actions/50b317a8410b468dbd2f1b75afd6e178')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/8d285110-04ba-4dd3-8d79-4e3438e50577/50b317a8410b468dbd2f1b75afd6e178')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules/actions",
+            "apiVersion": "2021-03-01-preview",
+            "properties": {
+                "ruleId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/8d285110-04ba-4dd3-8d79-4e3438e50577')]",
+                "triggerUri": "[listCallbackURL(concat('/subscriptions/b4dd7585-284d-41b5-88d2-0b4d055b1d15/resourceGroups/Bhavanat/providers/Microsoft.Logic/workflows/Malware-Response','/triggers/When_a_response_to_an_Azure_Sentinel_alert_is_triggered'),'2016-06-01').value]",
+                "logicAppResourceId": "/subscriptions/b4dd7585-284d-41b5-88d2-0b4d055b1d15/resourceGroups/Bhavanat/providers/Microsoft.Logic/workflows/Malware-Response",
+                "operatesOn": "Alert"
+            },
+            "dependsOn": [
+                "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/8d285110-04ba-4dd3-8d79-4e3438e50577')]"
+            ]
+        }
+    ]
+}

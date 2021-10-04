@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/b8e8258f-726b-4ae7-8feb-64077223de30')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/b8e8258f-726b-4ae7-8feb-64077223de30')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "apiVersion": "2021-03-01-preview",
+            "properties": {
+                "displayName": "Malicous Files Detection: Details",
+                "description": "Whenever a malware is detected, we delete it from blob without user's consent. But when incident is triggered, the user should be able to get details related to this file.",
+                "severity": "Medium",
+                "enabled": true,
+                "query": "let filename = SecurityAlert\r\n    | where TimeGenerated >=ago(7d)\r\n    | where DisplayName has \"Potential malware uploaded to\"\r\n    | project\r\n        tostring(parse_json(ExtendedProperties)[\"Blob\"]),\r\n        tostring(parse_json(ExtendedProperties)[\"Malware description\"]);\r\nfilename\r\n| join AttachmentLogs_CL\r\n    on $left.ExtendedProperties_Blob == $right.filename_s\r\n| project\r\n    TimeGenerated,\r\n    MaliciousFile=ExtendedProperties_Blob,\r\n    FileSize=filesize_d,\r\n    ContentType=content_type_s,\r\n    channel_s,\r\n    channelid_s,\r\n    ['ExtendedProperties_Malware description'],\r\n    Type,\r\n    UploadedBy=author_s\r\n| extend AccountCustomEntity = UploadedBy",
+                "queryFrequency": "PT5H",
+                "queryPeriod": "PT5H",
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "suppressionDuration": "PT5H",
+                "suppressionEnabled": false,
+                "tactics": [],
+                "alertRuleTemplateName": null,
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": [],
+                        "groupByAlertDetails": [],
+                        "groupByCustomDetails": []
+                    }
+                },
+                "eventGroupingSettings": {
+                    "aggregationKind": "SingleAlert"
+                },
+                "alertDetailsOverride": null,
+                "customDetails": null,
+                "entityMappings": null
+            }
+        }
+    ]
+}

@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/fb28afa4-04e6-4772-9353-cfed0d63c4ff')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/fb28afa4-04e6-4772-9353-cfed0d63c4ff')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "apiVersion": "2021-03-01-preview",
+            "properties": {
+                "displayName": "Newly Created Bot Joined",
+                "description": "Triggered when a recently created Bot joins the server",
+                "severity": "Low",
+                "enabled": true,
+                "query": "let tableName = DiscordAuditLogs_CL;\r\nlet operationName = 'BotJoined';\r\nlet dateCreated = 7d;\r\nDiscordAuditLogs_CL\r\n| where type_s == operationName\r\n| where todatetime(time_s) > ago(dateCreated)\r\n| project TimeGenerated, Bot=name_s, Datecreated=time_s\r\n",
+                "queryFrequency": "PT5H",
+                "queryPeriod": "PT5H",
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "suppressionDuration": "PT5H",
+                "suppressionEnabled": false,
+                "tactics": [],
+                "alertRuleTemplateName": null,
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": [],
+                        "groupByAlertDetails": [],
+                        "groupByCustomDetails": []
+                    }
+                },
+                "eventGroupingSettings": {
+                    "aggregationKind": "SingleAlert"
+                },
+                "alertDetailsOverride": null,
+                "customDetails": null,
+                "entityMappings": null
+            }
+        }
+    ]
+}

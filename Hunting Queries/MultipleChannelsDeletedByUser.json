@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/48bf9120-d300-4c46-b883-34c24c4cdd0c')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/48bf9120-d300-4c46-b883-34c24c4cdd0c')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "apiVersion": "2021-03-01-preview",
+            "properties": {
+                "displayName": "Multiple Channels deleted by a single user",
+                "description": "Identifies if multiple Discord Channels have been deleted by a single user in a short interval.",
+                "severity": "Medium",
+                "enabled": true,
+                "query": "let time_window = 7d;\nlet max_delete = 3;\nlet Operation = \"ChannelDelete\";\nDiscordAuditLogs_CL \n| where TimeGenerated > ago(time_window)\n| where type_s == Operation\n| summarize count() by ExtendedProperties_s, bin(TimeGenerated, 1h)\n| where count_ >= max_delete\n| project ExtendedProperties_s, count_, TimeGenerated",
+                "queryFrequency": "PT5H",
+                "queryPeriod": "PT5H",
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "suppressionDuration": "PT5H",
+                "suppressionEnabled": false,
+                "tactics": [],
+                "alertRuleTemplateName": null,
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": [],
+                        "groupByAlertDetails": [],
+                        "groupByCustomDetails": []
+                    }
+                },
+                "eventGroupingSettings": {
+                    "aggregationKind": "SingleAlert"
+                },
+                "alertDetailsOverride": null,
+                "customDetails": null,
+                "entityMappings": null
+            }
+        }
+    ]
+}

@@ -1,0 +1,1022 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "174846c5-0a85-47e2-8b6a-c472e72513c7",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "type": 4,
+            "value": {
+              "durationMs": 604800000
+            },
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 300000
+                },
+                {
+                  "durationMs": 900000
+                },
+                {
+                  "durationMs": 1800000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 14400000
+                },
+                {
+                  "durationMs": 43200000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 259200000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2419200000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 5184000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ],
+              "allowCustom": true
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            }
+          },
+          {
+            "id": "34fd23b3-a49f-4f53-bf9b-35ac9347d491",
+            "version": "KqlParameterItem/1.0",
+            "name": "DiscordUser",
+            "type": 2,
+            "query": "MessageLogs_CL\r\n| summarize count() by author_s\r\n| project author_s",
+            "value": "bhavanat12#2470",
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 604800000
+            },
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces"
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters - 1"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## 1. Message Logs"
+      },
+      "name": "text - 17"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let tableName = MessageLogs_CL;\r\ntableName\r\n| where author_s == '{DiscordUser}'\r\n| summarize msgCount = count() by channel_s\r\n| render barchart",
+        "size": 0,
+        "title": "Message count per channel by user: {DiscordUser}",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "query - 5"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let tableName = MessageLogs_CL;\r\ntableName\r\n| summarize msgCount = count() by channel_s\r\n| render piechart\r\n\r\n",
+        "size": 0,
+        "title": "Total Message count per channel",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "customWidth": "30",
+      "name": "query - 6"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let tableName = MessageLogs_CL;\r\ntableName\r\n| where urls_s != ''\r\n| summarize msgCount = count() by channel_s\r\n| render piechart\r\n",
+        "size": 0,
+        "title": "Total Url count per channel",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "customWidth": "30",
+      "name": "query - 8"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let tableName = AttachmentLogs_CL;\r\ntableName\r\n| summarize attachmentCount = count() by channel_s\r\n| render piechart",
+        "size": 0,
+        "title": "Total Attachment count per channel ID",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "customWidth": "30",
+      "name": "query - 9"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let tableName = AttachmentLogs_CL;\r\ntableName\r\n| summarize count=count() by content_type_s\r\n| render barchart",
+        "size": 0,
+        "title": "Attachment Types shared by all users",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "chartSettings": {
+          "seriesLabelSettings": [
+            {
+              "seriesName": "txt",
+              "label": "Txt"
+            },
+            {
+              "seriesName": "application/pdf",
+              "label": "Pdf"
+            },
+            {
+              "seriesName": "image/png",
+              "label": "Png"
+            },
+            {
+              "seriesName": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              "label": "Xlsx"
+            },
+            {
+              "seriesName": "text/html; charset=utf-8",
+              "label": "Html"
+            },
+            {
+              "seriesName": "text/csv; charset=utf-8",
+              "label": "Csv"
+            },
+            {
+              "seriesName": "png",
+              "label": "Png"
+            }
+          ]
+        }
+      },
+      "name": "query - 18"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let tableName = AttachmentLogs_CL;\r\ntableName\r\n| where author_s == '{DiscordUser}'\r\n| summarize attachCount = count() by bin(TimeGenerated, 1d)\r\n| order by attachCount desc\r\n| project Day=format_datetime(TimeGenerated,'dd/MM/yyy'), attachCount\r\n\r\n\r\n\r\n",
+        "size": 1,
+        "title": "Day-wise count of Attachments shared by user: {DiscordUser}",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "attachCount",
+              "formatter": 3,
+              "formatOptions": {
+                "palette": "orange"
+              }
+            },
+            {
+              "columnMatch": "attachment Count",
+              "formatter": 3,
+              "formatOptions": {
+                "palette": "orange"
+              }
+            }
+          ],
+          "labelSettings": [
+            {
+              "columnId": "Day"
+            },
+            {
+              "columnId": "attachCount",
+              "label": "Attachment Count"
+            }
+          ]
+        }
+      },
+      "customWidth": "45",
+      "name": "query - 11"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let tableName = AttachmentLogs_CL;\r\ntableName\r\n| summarize Uploadcount=count() by author_s\r\n| extend Threat_Level = case(Uploadcount >= 15, \"❌ High Risk\", Uploadcount < 15 and Uploadcount >= 7,\"⚠️ Moderate Risk\", \"✔️ Low Risk\")\r\n| join kind=inner(AttachmentLogs_CL\r\n| extend createTime = TimeGenerated\r\n| summarize Latest_Upload = max(createTime) by author_s) on $left.author_s == $right.author_s\r\n| order by Uploadcount desc\r\n| project Threat_Level, author_s, Uploadcount, Latest_Upload\r\n\r\n\r\n\r\n",
+        "size": 1,
+        "title": "Attachments shared by all users",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "Uploadcount",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "greenRed"
+              }
+            }
+          ]
+        }
+      },
+      "customWidth": "50",
+      "name": "query - 20"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let tableName = MessageLogs_CL;\r\ntableName\r\n| where urls_s != ''\r\n| where author_s == '{DiscordUser}'\r\n| summarize urlCount = count() by bin(TimeGenerated, 1d)\r\n| order by TimeGenerated desc\r\n| project Day=format_datetime(TimeGenerated,'dd/MM/yyy'), urlCount, WarningLevel=urlCount\r\n\r\n\r\n\r\n\r\n\r\n",
+        "size": 1,
+        "title": "Day-wise count of URLs shared by user: {DiscordUser}",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "WarningLevel",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": ">",
+                    "thresholdValue": "5",
+                    "representation": "3",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": ">",
+                    "thresholdValue": "2",
+                    "representation": "2",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "<=",
+                    "thresholdValue": "2",
+                    "representation": "success",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "success",
+                    "text": "{0}{1}"
+                  }
+                ],
+                "compositeBarSettings": {
+                  "labelText": "",
+                  "columnSettings": []
+                }
+              }
+            },
+            {
+              "columnMatch": "urlCount",
+              "formatter": 3,
+              "formatOptions": {
+                "palette": "blue"
+              }
+            },
+            {
+              "columnMatch": "msgCount",
+              "formatter": 3,
+              "formatOptions": {
+                "palette": "blue"
+              }
+            }
+          ]
+        }
+      },
+      "customWidth": "45",
+      "name": "query - 10"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let AllFiles = AttachmentLogs_CL;\r\nAllFiles\r\n| summarize allCount = count();\r\n\r\n\r\n\r\n\r\n",
+        "size": 1,
+        "title": "Total Attachments uploaded by all users",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "graph",
+        "graphSettings": {
+          "type": 2,
+          "topContent": {},
+          "centerContent": {
+            "columnMatch": "allCount",
+            "numberFormat": {
+              "unit": 0,
+              "options": {
+                "style": "decimal",
+                "useGrouping": false
+              }
+            }
+          },
+          "hivesContent": {
+            "columnMatch": "allCount",
+            "formatter": 1
+          },
+          "nodeIdField": "allCount",
+          "graphOrientation": 3,
+          "showOrientationToggles": false,
+          "nodeSize": null,
+          "staticNodeSize": 100,
+          "colorSettings": {
+            "nodeColorField": "allCount",
+            "type": 3,
+            "thresholdsGrid": [
+              {
+                "representation": "green"
+              },
+              {
+                "operator": "Default",
+                "thresholdValue": null,
+                "representation": "lightBlue"
+              }
+            ]
+          },
+          "groupByField": "allCount",
+          "hivesMargin": 15
+        }
+      },
+      "customWidth": "25",
+      "name": "query - 21"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let malFiles = SecurityAlert;\r\nmalFiles\r\n| where DisplayName has \"Potential malware uploaded to\"\r\n| summarize allCount = count();\r\n\r\n\r\n\r\n\r\n",
+        "size": 1,
+        "title": "Malware count detected in attachments",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "graph",
+        "graphSettings": {
+          "type": 2,
+          "topContent": {},
+          "centerContent": {
+            "columnMatch": "allCount",
+            "formatter": 1,
+            "numberFormat": {
+              "unit": 0,
+              "options": {
+                "style": "decimal"
+              }
+            }
+          },
+          "hivesContent": {
+            "columnMatch": "allCount",
+            "formatter": 1
+          },
+          "nodeIdField": "allCount",
+          "graphOrientation": 3,
+          "showOrientationToggles": false,
+          "nodeSize": null,
+          "staticNodeSize": 100,
+          "colorSettings": {
+            "nodeColorField": "allCount",
+            "type": 3,
+            "thresholdsGrid": [
+              {
+                "operator": "Default",
+                "thresholdValue": null,
+                "representation": "red"
+              }
+            ]
+          },
+          "groupByField": "allCount",
+          "hivesMargin": 15
+        }
+      },
+      "customWidth": "25",
+      "name": "query - 22"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let tableName = AttachmentLogs_CL;\r\ntableName\r\n| summarize count=count() by author_s\r\n| render barchart",
+        "size": 0,
+        "title": "Uploads by all users",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "customWidth": "50",
+      "name": "query - 19"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let tableName = AttachmentLogs_CL;\r\ntableName\r\n| summarize count=count() by bin(TimeGenerated, 1h)\r\n| render linechart\r\n",
+        "size": 0,
+        "title": "Upload Trend",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "customWidth": "50",
+      "name": "query - 23"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let tableName = MessageLogs_CL;\r\ntableName\r\n| where urls_s != ''\r\n| summarize Urlcount=count() by urls_s\r\n| order by Urlcount desc\r\n| project Domains=urls_s, Urlcount\r\n\r\n",
+        "size": 0,
+        "title": "Domains shared in messages by all users",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "areachart",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "Urlcount",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "orange"
+              }
+            }
+          ]
+        }
+      },
+      "name": "query - 7"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": ""
+      },
+      "name": "text - 24"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## 2. Audit Operation Logs"
+      },
+      "name": "text - 25"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let tableName = DiscordAuditLogs_CL;\r\ntableName\r\n| make-series Trend = count() default = 0 on TimeGenerated from ago(7d) to now() step 1h by type_s\r\n| project-away TimeGenerated\r\n| join kind = inner (tableName\r\n    | summarize Count=count() by type_s\r\n    ) on type_s\r\n| order by Count desc\r\n| project type_s, Count, Trend\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+        "size": 0,
+        "title": "Audit Operations per day",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "type_s",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "35ch"
+              }
+            },
+            {
+              "columnMatch": "Count",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "turquoise",
+                "customColumnWidthSetting": "30ch"
+              }
+            },
+            {
+              "columnMatch": "Trend",
+              "formatter": 21,
+              "formatOptions": {
+                "palette": "green"
+              }
+            },
+            {
+              "columnMatch": "Requests",
+              "formatter": 8,
+              "formatOptions": {
+                "palette": "purple"
+              }
+            }
+          ],
+          "labelSettings": [
+            {
+              "columnId": "type_s",
+              "label": "Operation Type"
+            },
+            {
+              "columnId": "Count"
+            },
+            {
+              "columnId": "Trend"
+            }
+          ]
+        }
+      },
+      "customWidth": "50",
+      "name": "query - 12"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let tableName = DiscordAuditLogs_CL;\r\ntableName\r\n| summarize Count=count() by type_s\r\n| render piechart\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+        "size": 0,
+        "title": "Percentage of Audit Operations per day",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "customWidth": "50",
+      "name": "query - 16"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let tableName = DiscordAuditLogs_CL;\r\ntableName\r\n| where type_s == \"AttachmentForward\"\r\n| where ExtendedProperties_s != ''\r\n| summarize count=count() by ExtendedProperties_s\r\n| render barchart\r\n",
+        "size": 0,
+        "title": "Attachment forwarded from channels",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "barchart"
+      },
+      "name": "query - 13"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let tableName = AttachmentLogs_CL;\r\ntableName\r\n| summarize countBytes=sum(filesize_d) by bin(TimeGenerated, 1d)\r\n| order by TimeGenerated desc\r\n| project Day=format_datetime(TimeGenerated,'dd/MM/yyy'), countBytes, BytesGraph=countBytes",
+        "size": 0,
+        "title": "Attachment data uploaded per day",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "countBytes",
+              "formatter": 16,
+              "formatOptions": {
+                "showIcon": true,
+                "compositeBarSettings": {
+                  "labelText": "",
+                  "columnSettings": [
+                    {
+                      "columnName": "countBytes",
+                      "color": "blue"
+                    },
+                    {
+                      "columnName": "Day",
+                      "color": "green"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "columnMatch": "BytesGraph",
+              "formatter": 3,
+              "formatOptions": {
+                "palette": "green",
+                "customColumnWidthSetting": "30ch"
+              }
+            }
+          ],
+          "labelSettings": [
+            {
+              "columnId": "Day"
+            },
+            {
+              "columnId": "countBytes",
+              "label": "Sum (Bytes)"
+            },
+            {
+              "columnId": "BytesGraph",
+              "label": "Bytes graph"
+            }
+          ]
+        },
+        "tileSettings": {
+          "showBorder": false
+        }
+      },
+      "customWidth": "45",
+      "name": "query - 14"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let tableName = AttachmentLogs_CL;\r\ntableName\r\n| summarize countBytes=sum(filesize_d)\r\n| project BytesGraph=countBytes",
+        "size": 0,
+        "title": "Attachment data uploaded per week",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "graph",
+        "graphSettings": {
+          "type": 2,
+          "topContent": {
+            "columnMatch": "BytesGraph"
+          },
+          "centerContent": {
+            "columnMatch": "BytesGraph",
+            "formatter": 1,
+            "numberFormat": {
+              "unit": 2,
+              "options": {
+                "style": "decimal"
+              }
+            },
+            "tooltipFormat": {
+              "tooltip": "Uploaded Data"
+            }
+          },
+          "nodeIdField": "BytesGraph",
+          "graphOrientation": 3,
+          "showOrientationToggles": false,
+          "nodeSize": null,
+          "staticNodeSize": 100,
+          "colorSettings": null,
+          "hivesMargin": 5
+        }
+      },
+      "customWidth": "45",
+      "name": "query - 15"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": ""
+      },
+      "name": "text - 23"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## 3. Security Alerts"
+      },
+      "name": "text - 22"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "cd98a9c7-5dbd-4f92-a967-7ed1c781132a",
+            "version": "KqlParameterItem/1.0",
+            "name": "AlertSeverity",
+            "type": 2,
+            "isRequired": true,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "SecurityAlert\r\n| summarize Count = count() by AlertSeverity\r\n| order by Count desc, AlertSeverity asc\r\n| project Value = AlertSeverity, Label = strcat(AlertSeverity, ' - ', Count)",
+            "value": [
+              "value::all"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": [
+                "value::all"
+              ]
+            },
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces"
+          },
+          {
+            "id": "df0fbc31-ade1-4488-9109-a4f647ad8fe2",
+            "version": "KqlParameterItem/1.0",
+            "name": "ProductName",
+            "type": 2,
+            "isRequired": true,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "SecurityAlert\r\n| summarize Count = count() by ProductName\r\n| order by Count desc, ProductName asc\r\n| project Value = ProductName, Label = strcat(ProductName, ' - ', Count)",
+            "value": [
+              "value::all"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": [
+                "value::all"
+              ]
+            },
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces"
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters - 3"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let data = SecurityAlert\n| where \"{AlertSeverity:lable}\" == \"All\" or AlertSeverity in ({AlertSeverity})\n| where \"{ProductName:lable}\" == \"All\" or ProductName in ({ProductName});\ndata\n| summarize Count = count() by AlertSeverity\n| join kind = inner (data\n | make-series Trend = count() default = 0 on TimeGenerated from {TimeRange:start} to {TimeRange:end} step {TimeRange:grain} by AlertSeverity)\n on AlertSeverity\n | project-away TimeGenerated\n| extend AlertSeveritys = AlertSeverity\n| union (\n data \n | summarize Count = count() \n | extend jkey = 1\n | join kind=inner (data\n | make-series Trend = count() default = 0 on TimeGenerated from {TimeRange:start} to {TimeRange:end} step {TimeRange:grain}\n | extend jkey = 1) on jkey\n | extend AlertSeverity = 'All', AlertSeveritys = '*' \n)\n| extend Severity = iif(AlertSeverity == \"All\", 0,iif(AlertSeverity == \"High\", 1, iif(AlertSeverity == \"Medium\", 2, iif(AlertSeverity == \"Low\", 3, 4))))\n| order by Severity asc\n",
+        "size": 3,
+        "title": "Security Alerts by Severity",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "exportFieldName": "AlertSeverity",
+        "exportParameterName": "AlertSeverityPicker",
+        "exportDefaultValue": "All",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "tiles",
+        "tileSettings": {
+          "titleContent": {
+            "columnMatch": "AlertSeverity",
+            "formatter": 1,
+            "formatOptions": {
+              "showIcon": true
+            }
+          },
+          "leftContent": {
+            "columnMatch": "Count",
+            "formatter": 12,
+            "formatOptions": {
+              "showIcon": true
+            },
+            "numberFormat": {
+              "unit": 17,
+              "options": {
+                "style": "decimal",
+                "maximumFractionDigits": 2,
+                "maximumSignificantDigits": 3
+              }
+            }
+          },
+          "secondaryContent": {
+            "columnMatch": "Trend",
+            "formatter": 9,
+            "formatOptions": {
+              "showIcon": true
+            }
+          },
+          "showBorder": false,
+          "sortOrderField": 1
+        }
+      },
+      "customWidth": "50",
+      "name": "SecurityAlertsbySeverity"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let data = SecurityAlert\r\n| where \"{AlertSeverity:lable}\" == \"All\" or AlertSeverity in ({AlertSeverity})\r\n| where \"{ProductName:lable}\" == \"All\" or ProductName in ({ProductName})\r\n| where AlertSeverity == '{AlertSeverityPicker}' or '{AlertSeverityPicker}' == \"All\";\r\ndata\r\n| summarize Count = count() by ProductName\r\n| join kind = inner (data\r\n | make-series Trend = count() default = 0 on TimeGenerated from {TimeRange:start} to {TimeRange:end} step {TimeRange:grain} by ProductName)\r\n on ProductName\r\n | project-away TimeGenerated\r\n| extend ProductNames = ProductName\r\n| union (\r\n data \r\n | summarize Count = count() \r\n | extend jkey = 1\r\n | join kind=inner (data\r\n | make-series Trend = count() default = 0 on TimeGenerated from {TimeRange:start} to {TimeRange:end} step {TimeRange:grain}\r\n | extend jkey = 1) on jkey\r\n | extend ProductName = 'All', ProductNames = '*' \r\n)\r\n| order by Count desc\r\n",
+        "size": 3,
+        "title": "Security Alerts by Product",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "exportFieldName": "ProductName",
+        "exportParameterName": "ProductNamePicker",
+        "exportDefaultValue": "All",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "tiles",
+        "tileSettings": {
+          "titleContent": {
+            "columnMatch": "ProductName",
+            "formatter": 1,
+            "formatOptions": {
+              "showIcon": true
+            }
+          },
+          "leftContent": {
+            "columnMatch": "Count",
+            "formatter": 12,
+            "formatOptions": {
+              "palette": "auto",
+              "showIcon": true
+            },
+            "numberFormat": {
+              "unit": 17,
+              "options": {
+                "maximumSignificantDigits": 3,
+                "maximumFractionDigits": 2
+              }
+            }
+          },
+          "secondaryContent": {
+            "columnMatch": "Trend",
+            "formatter": 9,
+            "formatOptions": {
+              "showIcon": true
+            }
+          },
+          "showBorder": false
+        }
+      },
+      "customWidth": "50",
+      "name": "SecurityAlertsbyProduct"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SecurityAlert\r\n| where \"{AlertSeverity:lable}\" == \"All\" or AlertSeverity in ({AlertSeverity})\r\n| where \"{ProductName:lable}\" == \"All\" or ProductName in ({ProductName})\r\n| where AlertSeverity == '{AlertSeverityPicker}' or '{AlertSeverityPicker}' == \"All\"\r\n| where ProductName == '{ProductNamePicker}' or '{ProductNamePicker}' == \"All\"\r\n| summarize count() by AlertSeverity, bin(TimeGenerated, 1d)",
+        "size": 0,
+        "title": "Security Alerts Over Time by Severity",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "linechart",
+        "chartSettings": {
+          "seriesLabelSettings": [
+            {
+              "seriesName": "Medium",
+              "color": "orange"
+            },
+            {
+              "seriesName": "Low",
+              "color": "yellow"
+            },
+            {
+              "seriesName": "Informational",
+              "color": "gray"
+            },
+            {
+              "seriesName": "High",
+              "color": "red"
+            }
+          ]
+        }
+      },
+      "customWidth": "50",
+      "name": "SecurityAlertsOverTimebySeverity"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SecurityAlert\r\n| where \"{AlertSeverity:lable}\" == \"All\" or AlertSeverity in ({AlertSeverity})\r\n| where \"{ProductName:lable}\" == \"All\" or ProductName in ({ProductName})\r\n| where AlertSeverity == '{AlertSeverityPicker}' or '{AlertSeverityPicker}' == \"All\"\r\n| where ProductName == '{ProductNamePicker}' or '{ProductNamePicker}' == \"All\"\r\n| summarize count() by ProductName, bin(TimeGenerated, 1d)",
+        "size": 0,
+        "title": "Security Alerts Over Time by Product",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "unstackedbar",
+        "chartSettings": {
+          "seriesLabelSettings": [
+            {
+              "seriesName": "Medium",
+              "color": "orange"
+            },
+            {
+              "seriesName": "Low",
+              "color": "yellow"
+            },
+            {
+              "seriesName": "Informational",
+              "color": "gray"
+            },
+            {
+              "seriesName": "High",
+              "color": "red"
+            }
+          ]
+        }
+      },
+      "customWidth": "50",
+      "name": "SecurityAlertsOverTimebyProduct"
+    }
+  ],
+  "fallbackResourceIds": [
+    "/subscriptions/b4dd7585-284d-41b5-88d2-0b4d055b1d15/resourcegroups/bhavanat/providers/microsoft.operationalinsights/workspaces/discordaudit"
+  ],
+  "fromTemplateId": "sentinel-UserWorkbook",
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

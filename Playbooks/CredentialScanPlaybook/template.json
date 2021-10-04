@@ -1,0 +1,212 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workflows_CredentialScanPlaybook_name": {
+            "defaultValue": "CredentialScanPlaybook",
+            "type": "String"
+        },
+        "connections_azuresentinel_externalid": {
+            "defaultValue": "/subscriptions/b4dd7585-284d-41b5-88d2-0b4d055b1d15/resourceGroups/Bhavanat/providers/Microsoft.Web/connections/azuresentinel",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_CredentialScanPlaybook_name')]",
+            "location": "centralindia",
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "When_a_response_to_an_Azure_Sentinel_alert_is_triggered": {
+                            "type": "ApiConnectionWebhook",
+                            "inputs": {
+                                "body": {
+                                    "callback_url": "@{listCallbackUrl()}"
+                                },
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['azuresentinel']['connectionId']"
+                                    }
+                                },
+                                "path": "/subscribe"
+                            }
+                        }
+                    },
+                    "actions": {
+                        "Alert_-_Get_incident": {
+                            "runAfter": {},
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['azuresentinel']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/Incidents/subscriptions/@{encodeURIComponent(triggerBody()?['WorkspaceSubscriptionId'])}/resourceGroups/@{encodeURIComponent(triggerBody()?['WorkspaceResourceGroup'])}/workspaces/@{encodeURIComponent(triggerBody()?['WorkspaceId'])}/alerts/@{encodeURIComponent(triggerBody()?['SystemAlertId'])}"
+                            }
+                        },
+                        "HTTP": {
+                            "runAfter": {
+                                "Initialize_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Http",
+                            "inputs": {
+                                "body": {
+                                    "avatar_url": "https://swimburger.net/media/0zcpmk1b/azure.jpg",
+                                    "content": "AZURE ALERT : @{body('Alert_-_Get_incident')?['properties']?['incidentNumber']} - @{triggerBody()?['Severity']}",
+                                    "embeds": [
+                                        {
+                                            "color": 15258703,
+                                            "description": "@{body('Alert_-_Get_incident')?['properties']?['description']}",
+                                            "fields": [
+                                                {
+                                                    "inline": true,
+                                                    "name": "Message Sent By",
+                                                    "value": "@{variables('Custom_Details')['Author'][0]}"
+                                                },
+                                                {
+                                                    "inline": true,
+                                                    "name": "Time Generated",
+                                                    "value": "@{triggerBody()?['TimeGenerated']}"
+                                                },
+                                                {
+                                                    "name": "Channel Message was posted in",
+                                                    "value": "@{variables('Custom_Details')['Channel'][0]}"
+                                                },
+                                                {
+                                                    "name": "Message with Sensitive Information",
+                                                    "value": "@{variables('Custom_Details')['Message'][0]}"
+                                                }
+                                            ],
+                                            "image": {
+                                                "url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/A_picture_from_China_every_day_108.jpg"
+                                            },
+                                            "thumbnail": {
+                                                "url": "https://upload.wikimedia.org/wikipedia/commons/3/38/4-Nature-Wallpapers-2014-1_ukaavUI.jpg"
+                                            },
+                                            "title": "@{triggerBody()?['AlertDisplayName']}",
+                                            "url": "@{body('Alert_-_Get_incident')?['properties']?['incidentUrl']}"
+                                        }
+                                    ],
+                                    "username": "AzureSentinelWebhook"
+                                },
+                                "headers": {
+                                    "Accept": "application/json",
+                                    "Content-Type": "application/json"
+                                },
+                                "method": "POST",
+                                "uri": "https://discord.com/api/webhooks/890488115171569674/11MSlRABp3jLLp9PlGDz7nLhCx_sjA4G9wP3MEWNSlFAjZIlmgh17CiCz_Wh7Ej1flt4"
+                            }
+                        },
+                        "Initialize_variable": {
+                            "runAfter": {
+                                "Parse_JSON": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "Custom_details",
+                                        "type": "object",
+                                        "value": "@json(body('Parse_JSON')['Custom Details'])"
+                                    }
+                                ]
+                            }
+                        },
+                        "Parse_JSON": {
+                            "runAfter": {
+                                "Alert_-_Get_incident": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ParseJson",
+                            "inputs": {
+                                "content": "@triggerBody()?['ExtendedProperties']",
+                                "schema": {
+                                    "properties": {
+                                        "Alert generation status": {
+                                            "type": "string"
+                                        },
+                                        "Analytic Rule Ids": {
+                                            "type": "string"
+                                        },
+                                        "Analytic Rule Name": {
+                                            "type": "string"
+                                        },
+                                        "Correlation Id": {
+                                            "type": "string"
+                                        },
+                                        "Custom Details": {
+                                            "type": "string"
+                                        },
+                                        "Data Sources": {
+                                            "type": "string"
+                                        },
+                                        "Event Grouping": {
+                                            "type": "string"
+                                        },
+                                        "ProcessedBySentinel": {
+                                            "type": "string"
+                                        },
+                                        "Query": {
+                                            "type": "string"
+                                        },
+                                        "Query End Time UTC": {
+                                            "type": "string"
+                                        },
+                                        "Query Period": {
+                                            "type": "string"
+                                        },
+                                        "Query Start Time UTC": {
+                                            "type": "string"
+                                        },
+                                        "Search Query Results Overall Count": {
+                                            "type": "string"
+                                        },
+                                        "Trigger Operator": {
+                                            "type": "string"
+                                        },
+                                        "Trigger Threshold": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "azuresentinel": {
+                                "connectionId": "[parameters('connections_azuresentinel_externalid')]",
+                                "connectionName": "azuresentinel",
+                                "id": "/subscriptions/b4dd7585-284d-41b5-88d2-0b4d055b1d15/providers/Microsoft.Web/locations/centralindia/managedApis/azuresentinel"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

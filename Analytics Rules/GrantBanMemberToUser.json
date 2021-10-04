@@ -1,0 +1,80 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/8e3a49c4-53e9-4aa9-ad00-f77bb76288cb')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/8e3a49c4-53e9-4aa9-ad00-f77bb76288cb')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "apiVersion": "2021-03-01-preview",
+            "properties": {
+                "displayName": "GrantBanMemberToUser",
+                "description": "Triggered when permission to ban members is assigned to a user",
+                "severity": "Medium",
+                "enabled": true,
+                "query": "let tableName = DiscordAuditLogs_CL;\r\nlet operationName = 'GrantBanMemberToUser';\r\nDiscordAuditLogs_CL\r\n| where type_s == operationName\r\n| project TimeGenerated, Actor=ExtendedProperties_s, Operation=type_s, AssignedTo=name_s",
+                "queryFrequency": "PT5M",
+                "queryPeriod": "PT5M",
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "suppressionDuration": "PT5H",
+                "suppressionEnabled": false,
+                "tactics": [],
+                "alertRuleTemplateName": null,
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": [],
+                        "groupByAlertDetails": [],
+                        "groupByCustomDetails": []
+                    }
+                },
+                "eventGroupingSettings": {
+                    "aggregationKind": "SingleAlert"
+                },
+                "alertDetailsOverride": null,
+                "customDetails": {
+                    "Admin": "Actor",
+                    "User": "AssignedTo",
+                    "Operation": "Operation"
+                },
+                "entityMappings": [
+                    {
+                        "entityType": "Account",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Name",
+                                "columnName": "Actor"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/8e3a49c4-53e9-4aa9-ad00-f77bb76288cb/actions/9ab80ab5535f4ec2ada5aca4fea96f45')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/8e3a49c4-53e9-4aa9-ad00-f77bb76288cb/9ab80ab5535f4ec2ada5aca4fea96f45')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules/actions",
+            "apiVersion": "2021-03-01-preview",
+            "properties": {
+                "ruleId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/8e3a49c4-53e9-4aa9-ad00-f77bb76288cb')]",
+                "triggerUri": "[listCallbackURL(concat('/subscriptions/b4dd7585-284d-41b5-88d2-0b4d055b1d15/resourceGroups/Bhavanat/providers/Microsoft.Logic/workflows/AuditLogsUserOperations','/triggers/When_a_response_to_an_Azure_Sentinel_alert_is_triggered'),'2016-06-01').value]",
+                "logicAppResourceId": "/subscriptions/b4dd7585-284d-41b5-88d2-0b4d055b1d15/resourceGroups/Bhavanat/providers/Microsoft.Logic/workflows/AuditLogsUserOperations",
+                "operatesOn": "Alert"
+            },
+            "dependsOn": [
+                "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/8e3a49c4-53e9-4aa9-ad00-f77bb76288cb')]"
+            ]
+        }
+    ]
+}
