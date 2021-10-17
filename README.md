@@ -6,7 +6,7 @@
 3. In order to track the Discord alerts sent by our Bot, follow the below steps:
    - Create a private channel where you want the Discord alerts to be displayed
    - Go to server settings -> Integrations -> New Webhook and select the channel that you created in step 1
-   - Copy the Webhook URL and paste this value while uploading the ARM template for Playbooks
+   - Copy the Webhook URL and paste this value while uploading the ARM template for Playbooks (Malware-Response)
 
 
 ### Configuration:
