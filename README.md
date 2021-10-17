@@ -3,6 +3,10 @@
 ### Code Deployment:
 1. The ARM templates corresponding to the Hunting Queries, Analytic Rules, Workbooks, Playbooks are given in the respective folders.
 2. Upload each of these templates to create the resources
+3. In order to track the Discord alerts sent by our Bot, follow the below steps:
+   - Create a private channel where you want the Discord alerts to be displayed
+   - Go to server settings -> Integrations -> New Webhook and select the channel that you created in step 1
+   - Copy the Webhook URL and paste this value while uploading the ARM template for Playbooks
 
 
 ### Configuration:
